@@ -1,0 +1,24 @@
+# Environment variables with only a key are resolved to their values on the
+# machine Compose is running on, which can be helpful for secret or
+# host-specific values.
+
+version: "2"
+
+services:
+  statsd:
+    image: hopsoft/graphite-statsd
+    ports:
+      - "8080:80" # grafana
+      - "8081:81" # grahpite
+      - "2003-2004:2003-2004"
+      - "2023-2024:2023-2024"
+      - "8125/udp"
+      - "8126:8126"
+
+
+  grafana:
+    image: grafana/grafana:latest
+    volumes:
+      - ./grafana-sysdig/sysdig:/var/lib/grafana/plugins/sysdig
+    ports:
+      - "3000:3000"

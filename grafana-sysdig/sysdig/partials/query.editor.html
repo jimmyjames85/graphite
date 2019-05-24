@@ -1,0 +1,119 @@
+<!--
+
+Copyright 2018 Draios Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+-->
+<query-editor-row query-ctrl="ctrl" class="generic-datasource-query-row" has-text-edit-mode="true">
+  <!-- Metric and aggregations -->
+  <div class="gf-form gf-form-inline">
+    <div class="gf-form gf-form--grow">
+      <label class="gf-form-label width-11">
+        Metric
+      </label>
+      <div class="gf-form gf-form--grow">
+        <gf-form-dropdown model="ctrl.target.target" class="gf-form-dropdown sysdig-query-editor-dropdown--grow" allow-custom="true"
+          lookup-text="true" get-options="ctrl.getMetricOptions($query)" on-change="ctrl.onChangeParameter()">
+        </gf-form-dropdown>
+      </div>
+    </div>
+
+    <div class="gf-form">
+      <label class="gf-form-label">
+        Time aggregation
+      </label>
+      <div class="gf-form">
+        <gf-form-dropdown model="ctrl.target.timeAggregation" class=" sysdig-query-editor-form--aggregation" allow-custom="false"
+          lookup-text="false" get-options="ctrl.getTimeAggregationOptions()" on-change="ctrl.onChangeParameter()">
+        </gf-form-dropdown>
+      </div>
+    </div>
+
+    <div class="gf-form">
+      <label class="gf-form-label">
+        Group aggregation
+      </label>
+      <div class="gf-form">
+        <gf-form-dropdown model="ctrl.target.groupAggregation" class=" sysdig-query-editor-form--aggregation" allow-custom="false"
+          lookup-text="false" get-options="ctrl.getGroupAggregationOptions()" on-change="ctrl.onChangeParameter()">
+        </gf-form-dropdown>
+      </div>
+    </div>
+  </div>
+
+  <!-- Segmentation -->
+  <div class="gf-form gf-form-inline" ng-repeat="item in ctrl.segmentByItems">
+    <div class="gf-form gf-form--grow">
+      <label class="gf-form-label width-11" ng-if="item.isFirst === true">
+        Segment by
+      </label>
+      <label class="gf-form-label width-11" ng-if="item.isFirst === false"></label>
+      
+      <div class="gf-form gf-form--grow">
+        <gf-form-dropdown model="item.segmentBy" class="gf-form-dropdown sysdig-query-editor-dropdown--grow" allow-custom="true"
+        lookup-text="true" placeholder="no segmentation" get-options="ctrl.getSegmentByOptions(item, $query)" on-change="ctrl.onChangeParameter()">
+        </gf-form-dropdown>
+      </div>
+
+      <div style="min-width: 80px;">
+        <button class="btn btn-inverse" ng-click="ctrl.removeSegmentBy(item)">
+          <i class="fa fa-trash" />
+        </button>
+        <button class="btn btn-inverse" ng-click="ctrl.addSegmentBy(item)">
+          <i class="fa fa-plus" />
+        </button>
+      </div>
+     </div>
+  </div>
+
+  <!-- Filter -->
+  <div class="gf-form-inline" ng-if="ctrl.panel.type !== 'table' || ctrl.isFirstTarget()">
+    <div class="gf-form gf-form--grow">
+      <label class="gf-form-label width-11">
+        Filter
+      </label>
+      <div class="gf-form gf-form--grow">
+        <input type="text" class="gf-form-input" ng-model="ctrl.target.filter" spellcheck="false" placeholder="optional filter" ng-blur="ctrl.onChangeParameter()">
+      </div>
+    </div>
+  </div>
+
+  <!-- Time series vs data point -->
+  <div class="gf-form gf-form-inline" ng-if="ctrl.target.isTabularFormat === false && ctrl.isFirstTarget()">
+    <div class="gf-form gf-form--grow">
+      <div class="gf-form gf-form--grow">
+        <gf-form-switch class="gf-form" label="Fetch single data point" label-class="width-11" checked="ctrl.target.isSingleDataPoint"
+          on-change="ctrl.refresh()">
+      </div>
+    </div>
+  </div>
+
+  <!-- Display options for segmented data -->
+  <div class="gf-form-inline" ng-if="ctrl.target.segmentBy && ctrl.isFirstTarget()">
+    <div class="gf-form">
+      <label class="gf-form-label width-11">
+        Display
+      </label>
+      <div class="gf-form width-11">
+        <gf-form-dropdown model="ctrl.target.sortDirection" class="gf-form-dropdown sysdig-query-editor-dropdown--grow" allow-custom="true"
+          lookup-text="true" placeholder="top" get-options="ctrl.getSortDirectionOptions()" on-change="ctrl.onChangeParameter()">
+        </gf-form-dropdown>
+      </div>
+      <div class="gf-form width-11">
+        <input type="number" class="gf-form-input" ng-model="ctrl.target.pageLimit" spellcheck="false" placeholder="number of elements (10 by default)"
+          ng-blur="ctrl.onChangeParameter()">
+      </div>
+    </div>
+  </div>
+</query-editor-row>
